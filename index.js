@@ -4,37 +4,34 @@ const remark = require('remark');
 const toString = require('mdast-util-to-string');
 const execa = require('execa');
 
-const doc = fs.readFileSync('./Tasks.md', 'utf8');
-
-const tasks = {};
-
 function rundown(options) {
   return function transformer(tree, file) {
-    let task = null;
-    tree.children.forEach(child => {
-      switch (child.type) {
+    let currentTask = null;
+
+    tree.children.forEach(node => {
+      switch (node.type) {
         case 'heading': {
           // Any level 2 heading is assumed to be a task.
-          if (child.depth === 2) {
-            const name = toString(child);
-            task = {
+          if (node.depth === 2) {
+            const name = toString(node);
+            currentTask = {
               name,
               lang: null,
               script: null
             };
-            options.tasks[name] = task;
+            options.tasks[name] = currentTask;
           } else {
             // Any other heading will unassign the current task, because we
             // don't want to associate any code blocks with a task if we're at
             // another heading level.
-            task = null;
+            currentTask = null;
           }
           break;
         }
         case 'code': {
-          if (task && !task.script) {
-            task.lang = child.lang;
-            task.script = child.value;
+          if (currentTask && !currentTask.script) {
+            currentTask.lang = node.lang;
+            currentTask.script = node.value;
           }
           break;
         }
@@ -42,6 +39,9 @@ function rundown(options) {
     });
   };
 }
+
+const doc = fs.readFileSync('./Tasks.md', 'utf8');
+const tasks = {};
 
 remark()
   .use(rundown, { tasks })
