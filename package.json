@@ -1,0 +1,13 @@
+{
+  "name": "@exogen/rundown",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "bin": "index.js",
+  "dependencies": {
+    "execa": "^0.11.0",
+    "jest": "^23.5.0",
+    "mdast-util-to-string": "^1.0.5",
+    "remark": "^9.0.0"
+  }
+}
