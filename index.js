@@ -60,7 +60,7 @@ remark()
             break;
           case 'js':
           case 'javascript':
-            execa('node', ['--eval', task.script], options);
+            execa.sync('node', ['--eval', task.script], options);
             break;
           default:
             console.error(`no executor for language: ${task.lang}`);
